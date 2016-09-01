@@ -29,7 +29,9 @@ namespace WebChatChart.Models
         public Metrics GetMetric(ObjectId id)
         {
             var res = Query<Metrics>.EQ(m => m.Id ,id);
-            return _dbMongoDatabase.GetCollection<Metrics>("chatTimings").FindOne(res);
+            var chatTimeTemp = _dbMongoDatabase.GetCollection<Metrics>("chatTimings").FindOne(res);
+            chatTimeTemp.CallLength = (chatTimeTemp.ConversationStartTime - chatTimeTemp.ConversationFinishTime).TotalSeconds;
+                return chatTimeTemp;
         }
     }
 }

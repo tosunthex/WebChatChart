@@ -20,7 +20,7 @@ namespace WebChatChart.Controller.API
         }
 
         [HttpGet]
-        public IEnumerable<Metrics> Get()
+        public IEnumerable<Models.Metrics> Get()
         {
             return objDataAccess.GetMetrics();
         }

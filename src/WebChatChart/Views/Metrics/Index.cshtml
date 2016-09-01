@@ -1,0 +1,47 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<!Doctype HTML>
+<html>
+<head>
+    <title>Bar Chart</title>
+    <script src="/js/chart.min.js"></script>
+    <script src="~/js/jquery-3.1.0.min.js"></script>
+</head>
+<body>
+    <canvas id="barChartLoc" height="300" width="300"></canvas>
+@*<script>
+        var barChartLocData = {
+            labels: ["January", "Feburary", "March"],
+            datasets: [{ fillColor: "lightblue", strokeColor: "blue", data: [15, 20, 35] }]
+        };
+        var mybarChartLoc = new Chart(document.getElementById("barChartLoc").getContext("2d")).Bar(barChartLocData);
+    </script>*@
+<script>
+    $(document)
+        .ready(function() {
+            $.ajax({
+                url: "/api/Metrics",
+                success: function(result) {
+                    var labels = [];
+                    var datas = [];
+                    for (var i = 0; i < result.length; i++) {
+                        labels.push(result[i].agentAverageResponseTime);
+                        datas.push(result[i].customerAverageResponseTime);
+                    }
+                    var barChartLocData = {
+                        labels: labels,
+                        datasets: [
+                            { fillColor: "lightblue", strokeColor: "blue", data: datas }
+                        ]
+                    };
+                    var mybarChartLoc = new Chart(document.getElementById("barChartLoc").getContext("2d"))
+                        .Bar(barChartLocData);
+                }
+            });
+        });
+</script>
+</body>
+</html>

@@ -1,47 +1,143 @@
 ﻿@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+	For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @{
 }
 <!Doctype HTML>
 <html>
 <head>
-    <title>Bar Chart</title>
-    <script src="/js/chart.min.js"></script>
-    <script src="~/js/jquery-3.1.0.min.js"></script>
+	<title>Bar Chart</title>
+	
+	<script src="~/js/jquery-3.1.0.min.js"></script>
+	@*<script src="http://dima117.github.io/Chart.Scatter/Chart.Scatter.min.js"></script>*@
 </head>
 <body>
-    <canvas id="barChartLoc" height="300" width="300"></canvas>
+<script src="http://momentjs.com/downloads/moment.min.js"></script>
+<script src="/js/chart.min.js"></script>
+<canvas id="barChartLoc" height="300" width="300"></canvas>
 @*<script>
-        var barChartLocData = {
-            labels: ["January", "Feburary", "March"],
-            datasets: [{ fillColor: "lightblue", strokeColor: "blue", data: [15, 20, 35] }]
-        };
-        var mybarChartLoc = new Chart(document.getElementById("barChartLoc").getContext("2d")).Bar(barChartLocData);
-    </script>*@
+		var barChartLocData = {
+			labels: ["January", "Feburary", "March"],
+			datasets: [{ fillColor: "lightblue", strokeColor: "blue", data: [15, 20, 35] }]
+		};
+		var mybarChartLoc = new Chart(document.getElementById("barChartLoc").getContext("2d")).Bar(barChartLocData);
+	</script>*@
 <script>
     $(document)
         .ready(function() {
             $.ajax({
                 url: "/api/Metrics",
                 success: function(result) {
-                    var labels = [];
+                    var labels = "Average Response Time";
                     var datas = [];
                     for (var i = 0; i < result.length; i++) {
-                        labels.push(result[i].agentAverageResponseTime);
-                        datas.push(result[i].customerAverageResponseTime);
+                        datas.push(
+                        {
+                            x: new Date(result[i].conversationStartTime),
+                            y: result[i].customerAverageResponseTime
+                        });
                     }
-                    var barChartLocData = {
-                        labels: labels,
-                        datasets: [
-                            { fillColor: "lightblue", strokeColor: "blue", data: datas }
-                        ]
-                    };
-                    var mybarChartLoc = new Chart(document.getElementById("barChartLoc").getContext("2d"))
-                        .Bar(barChartLocData);
+
+                    var data3 = [
+                        {
+                            label: 'temperature',
+                            strokeColor: '#A31515',
+                            data: datas
+                        }
+                    ];
+                    // --------------- //
+                    var ctx = $("#barChartLoc");
+                    var scatterChart = new Chart(ctx,
+                    {
+                        type: 'line',
+                        data: {
+                            datasets: [
+                                {
+                                    label: 'Ortalama Cevaplama Süresi',
+                                    data: datas
+                                }
+                            ]
+                        },
+                        options: {
+                            scales: {
+                                xAxes: [
+                                    {
+                                        type: 'time',
+                                        position: 'top',
+                                        time: {
+                                            displayFormats: {
+                                                quarter: 'MMM YYYY'
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    });
+                    // --------------- //
+
+                    /*var ctx3 = document.getElementById("barChartLoc").getContext("2d");
+                    var myDateLineChart = new Chart(ctx3).Scatter(data3, {
+                        bezierCurve: true,
+                        showTooltips: true,
+                        scaleShowHorizontalLines: true,
+                        scaleShowLabels: true,
+                        scaleType: "date",
+                        scaleLabel: "<%=value%> s"
+                    });*/
+
+
                 }
             });
         });
 </script>
+@*<script>
+        var data3 = [
+                    {
+                        label: 'temperature',
+                        strokeColor: '#A31515',
+                        data: [
+                            {
+                                x: new Date('2011-04-11T11:45:00'),
+                                y: 25
+                            },
+                            {
+                                x: new Date('2011-04-11T12:51:00'),
+                                y: 28
+                            },
+                            {
+                                x: new Date('2011-04-11T14:10:00'),
+                                y: 22
+                            },
+                            {
+                                x: new Date('2011-04-11T15:15:00'),
+                                y: 18
+                            },
+                            {
+                                x: new Date('2011-04-11T17:00:00'),
+                                y: 25
+                            },
+                            {
+                                x: new Date('2011-04-11T21:00:00'),
+                                y: 24
+                            },
+                            {
+                                x: new Date('2011-04-12T13:00:00'),
+                                y: 24
+                            }
+                        ]
+                    }];
+
+        var ctx3 = document.getElementById("barChartLoc").getContext("2d");
+        var myDateLineChart = new Chart(ctx3).Scatter(data3, {
+            bezierCurve: true,
+            showTooltips: true,
+            scaleShowHorizontalLines: true,
+            scaleShowLabels: true,
+            scaleType: "date",
+            scaleLabel: "<%=value%>°C"
+        });
+
+    </script>*@
 </body>
-</html>
+    </html>
